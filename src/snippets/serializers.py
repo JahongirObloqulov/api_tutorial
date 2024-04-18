@@ -1,5 +1,5 @@
-from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from rest_framework import serializers
+from .models import Snippet
 
 
 class SnippetSerializer(serializers.ModelSerializer):
