@@ -27,26 +27,24 @@ class SnippetList(APIView):
 
 class SnippetDetail(APIView):
 
-    def get_object(self, pk):
+    def get(self, request, pk, *args, **kwargs):
         try:
-            return Snippet.objects.get(pk=pk)
-        except Snippet.DoesNotExist:
-            raise Http404
+            snippet_instance = Snippet.objects.get(id=pk)
+        except:
+            return Response({"error": "snippet id doesnt find"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet)
-        return Response(serializer.data)
+        serializer = SnippetSerializer(snippet_instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = SnippetSerializer(snippet, data=request.data)
+    def put(self, request, pk, *args, **kwargs):
+        snippet_instance = Snippet.objects.get(id=pk)
+        serializer = SnippetSerializer(snippet_instance, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
+    def delete(self, request, pk, *args, **kwargs):
+        snippet_instance = Snippet.objects.get(id=pk)
+        snippet_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
